@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dante's Pizza & Bar — Barra do Garças</title>
+  <meta name="description" content="Pizzas, petiscos, drinks e rodízio às quartas e quintas. Dante's Pizza & Bar, no centro de Barra do Garças - MT.">
+  <link rel="stylesheet" href="css/style.css">
+  <script>try{ if(!localStorage.getItem("dantes_usuario")) location.replace("/dantes-pizza-e-bar"); }catch(e){}</script>
+</head>
+<body>
+
+<header class="topo" id="topo">
+  <div class="wrap">
+    <a href="#inicio" class="logo">Dante's<b>.</b></a>
+    <nav class="menu" id="menu">
+      <a href="#rodizio">Rodízio</a>
+      <a href="#cardapio">Cardápio</a>
+      <a href="#reservar">Reservar</a>
+      <a href="#contato">Onde estamos</a>
+    </nav>
+    <div class="user"><span id="olaUser"></span><button id="sair">Sair</button>
+      <button class="burger" id="burger" aria-label="Menu">☰</button></div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow fade">Barra do Garças · Mato Grosso</p>
+        <h1 class="fade" style="--d:.1s">Pizza,<br>petisco<br>&amp; <em>bar.</em></h1>
+        <p class="lead fade" style="--d:.2s">Forno quente, mesa cheia e drink gelado no centro da cidade. Reserve a sua mesa e chega que o Dante's te espera.</p>
+        <div class="acoes fade" style="--d:.3s">
+          <a href="#reservar" class="btn">Reservar mesa</a>
+          <a href="#cardapio" class="btn ghost">Ver cardápio</a>
+        </div>
+        <div class="nota fade" style="--d:.4s"><strong data-info="nota"></strong><span class="est">★★★★☆</span><span>no Google · <span data-info="avaliacoes"></span> avaliações</span></div>
+      </div>
+      <div class="colagem fade" style="--d:.2s">
+        <figure class="c1"><img src="img/pizza.png" alt="Pizza com azeitona preta e rúcula"></figure>
+        <figure class="c2"><img src="img/drink.png" alt="Drink com borda de sal e limão"></figure>
+      </div>
+    </div>
+  </section>
+
+  <div class="faixa" aria-hidden="true"><div id="faixa"></div></div>
+
+  <!-- RODÍZIO -->
+  <section class="rodizio" id="rodizio">
+    <div class="wrap">
+      <figure class="fade"><img src="img/rodizio.png" alt="Divulgação do rodízio do Dante's"></figure>
+      <div>
+        <p class="eyebrow fade">Toda semana</p>
+        <h2 class="fade" style="--d:.1s">Quarta e quinta<br>é dia de <em>rodízio</em></h2>
+        <div class="preco fade" style="--d:.2s"><small>R$</small><span data-info="rodizio.preco"></span></div>
+        <p class="fade" style="--d:.25s">Tudo à vontade, a partir das <b data-info="rodizio.inicio"></b>.</p>
+        <div class="detalhes fade" style="--d:.3s" id="rodizioInclui"></div>
+        <a href="#reservar" class="btn fade" style="--d:.35s">Garantir minha mesa</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARDÁPIO -->
+  <section class="cardapio" id="cardapio">
+    <div class="wrap">
+      <div class="cab">
+        <p class="eyebrow fade">Cardápio</p>
+        <h2 class="fade" style="--d:.1s">Uma prévia do que sai da nossa cozinha</h2>
+        <p class="fade" style="--d:.2s">Separamos alguns destaques. O cardápio completo você vê na mesa.</p>
+      </div>
+      <div class="abas fade" id="abas" role="tablist"></div>
+      <div id="paineis" class="fade"></div>
+      <p class="rodape-card" id="taxa"></p>
+    </div>
+  </section>
+
+  <!-- GALERIA -->
+  <section class="galeria">
+    <div class="wrap"><div class="grade" id="grade"></div></div>
+  </section>
+
+  <!-- RESERVAR -->
+  <section class="reservar" id="reservar">
+    <div class="wrap">
+      <div class="fade">
+        <p class="eyebrow">Reserva de mesa</p>
+        <h2 style="margin:10px 0 24px">Guarde o seu lugar</h2>
+        <div class="ok" id="ok" role="status"></div>
+        <form class="caixa" id="formReserva" novalidate>
+          <div class="par">
+            <label class="campo"><span>Nome</span><input id="rNome" type="text" readonly></label>
+            <label class="campo"><span>E-mail</span><input id="rEmail" type="email" readonly></label>
+          </div>
+          <div class="par">
+            <label class="campo"><span>Dia</span><input id="rData" type="date" required></label>
+            <label class="campo"><span>Horário</span><select id="rHora" required></select></label>
+          </div>
+          <div class="aviso fechado" id="avisoFechado"></div>
+          <div class="par">
+            <label class="campo"><span>Quantas pessoas</span><select id="rPessoas"></select></label>
+            <label class="campo"><span>WhatsApp (opcional)</span><input id="rTel" type="tel" autocomplete="tel" placeholder="(66) 9 0000-0000" maxlength="20"></label>
+          </div>
+          <div class="aviso" id="avisoRodizio">Esse dia é de <b>rodízio</b>: pizzas, panelinhas e petiscos à vontade a partir das 19h30.</div>
+          <label class="campo"><span>Observações (opcional)</span><textarea id="rObs" maxlength="300" placeholder="Aniversário, cadeirinha de criança, mesa na área externa..."></textarea></label>
+          <p class="erro" id="rErro" role="alert"></p>
+          <button class="btn" type="submit" id="rBtn">Reservar mesa</button>
+          <p class="fechados" id="fechados"></p>
+        </form>
+      </div>
+      <div class="minhas fade" style="--d:.15s">
+        <h3>Suas reservas</h3>
+        <div id="listaRes"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section class="contato" id="contato">
+    <div class="wrap">
+      <div class="dados">
+        <p class="eyebrow fade">Onde estamos</p>
+        <h2 class="fade" style="--d:.1s;margin-bottom:12px">Vem pro centro</h2>
+        <a class="dado fade" style="--d:.15s" id="lnkMapa" target="_blank" rel="noopener"><small>Endereço · ver no Google Maps</small><span data-info="endereco"></span></a>
+        <a class="dado fade" style="--d:.2s" id="lnkTel"><small>Telefone</small><span data-info="telefone"></span></a>
+        <a class="dado fade" style="--d:.25s" id="lnkZap" target="_blank" rel="noopener"><small>WhatsApp</small>Chamar agora</a>
+        <a class="dado fade" style="--d:.3s" id="lnkInsta" target="_blank" rel="noopener"><small>Instagram</small><span data-info="instagramUser"></span></a>
+      </div>
+      <div class="mapa fade" style="--d:.2s"><iframe id="mapa" title="Mapa do Dante's Pizza & Bar" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© <span id="ano"></span> Dante's Pizza &amp; Bar · Barra do Garças - MT</span><span id="rodapeCid">Pizzas · Petiscos · Drinks</span></div>
+</footer>
+
+<script src="js/api.js"></script>
+<script src="js/comum.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>

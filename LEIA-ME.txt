@@ -1,0 +1,6 @@
+DANTE'S — SITE DO CLIENTE (Render)
+
+Rodar local: npm start   (abre em http://localhost:3000/)
+Login: /dantes-pizza-e-bar    Site: /inicio
+Dados em dados/db.json. No plano gratis do Render esse arquivo e apagado a cada reinicio.
+A API do dono fica desligada ate existir a variavel ADMIN_SENHA.

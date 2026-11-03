@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: dantes-pizza-e-bar
+    runtime: node
+    plan: free
+    buildCommand: echo pronto
+    startCommand: npm start

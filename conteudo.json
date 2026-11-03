@@ -1,0 +1,194 @@
+{
+  "info": {
+    "nome": "Dante's Pizza & Bar",
+    "cidade": "Barra do Garças - MT",
+    "endereco": "Av. Min. João Alberto, 217 - Centro, Barra do Garças - MT, 78600-000",
+    "telefone": "(66) 99988-1372",
+    "whatsapp": "5566999881372",
+    "instagram": "https://www.instagram.com/dantes.bg/",
+    "instagramUser": "@dantes.bg",
+    "mapsLink": "https://www.google.com/maps/search/?api=1&query=Dante%27s+Pizza+%26+Bar+Av.+Min.+Jo%C3%A3o+Alberto+217+Barra+do+Gar%C3%A7as+MT",
+    "mapsEmbed": "https://www.google.com/maps?q=Dante%27s+Pizza+%26+Bar+Av.+Min.+Jo%C3%A3o+Alberto+217+Barra+do+Gar%C3%A7as+MT&output=embed",
+    "nota": "4,2",
+    "avaliacoes": 207,
+    "rodizio": {
+      "dias": "Quarta e quinta",
+      "preco": "59,90",
+      "inicio": "19h30",
+      "inclui": "Pizzas · Panelinhas · Petiscos"
+    },
+    "taxaServico": "Cobramos 10% de taxa de serviço."
+  },
+  "cardapio": [
+    {
+      "id": "pizzas",
+      "titulo": "Pizzas",
+      "nota": "Tamanhos: Família R$ 79,90 · Grande R$ 69,90 · Média R$ 59,90",
+      "itens": [
+        {
+          "nome": "Dante's Especial",
+          "desc": "Molho de tomate, mussarela, frango desfiado, calabresa, milho verde, palmito, bacon em cubos, batata palha, azeitona e orégano",
+          "preco": "a partir de R$ 59,90"
+        },
+        {
+          "nome": "Calabresa",
+          "desc": "Molho de tomate, queijo mussarela ralado, calabresa, azeitona, cebola e orégano",
+          "preco": "a partir de R$ 59,90"
+        },
+        {
+          "nome": "Portuguesa",
+          "desc": "Molho de tomate, mussarela, presunto, cebola, palmito, ovo, azeitona preta e orégano",
+          "preco": "a partir de R$ 59,90"
+        },
+        {
+          "nome": "Quatro Queijos",
+          "desc": "Molho de tomate, mussarela, provolone, parmesão, gorgonzola e azeitona",
+          "preco": "a partir de R$ 59,90"
+        }
+      ]
+    },
+    {
+      "id": "petiscos",
+      "titulo": "Petiscos",
+      "itens": [
+        {
+          "nome": "Torresmo com mandioca 500g",
+          "desc": "Forrado com alface, limão cortado ao meio e molho Dante's",
+          "preco": "39,90"
+        },
+        {
+          "nome": "Tilápia crocante 400g",
+          "desc": "Forrada com alface, limão cortado ao meio e molho Dante's",
+          "preco": "69,90"
+        },
+        {
+          "nome": "Ceviche de tilápia 400g",
+          "desc": "Tilápia, cebola roxa, pimenta do reino, pimenta de cheiro, limão, palmito de açaí, leite de coco e tomate cereja",
+          "preco": "89,90"
+        },
+        {
+          "nome": "Bolinha de queijo (25 un.)",
+          "desc": "Pra dividir na mesa",
+          "preco": "44,90"
+        }
+      ]
+    },
+    {
+      "id": "pratos",
+      "titulo": "Pratos",
+      "itens": [
+        {
+          "nome": "Picanha na pedra 500g",
+          "desc": "Churrasco na pedra, acompanha arroz branco, feijão tropeiro, vinagrete, maionese, mandioca e molho Dante's",
+          "preco": "129,90"
+        },
+        {
+          "nome": "Panelinha Nordestina",
+          "desc": "Arroz cremoso com carne seca desfiada, banana da terra e queijo coalho. Serve até 3 pessoas",
+          "preco": "79,90"
+        },
+        {
+          "nome": "Filé de frango à parmegiana",
+          "desc": "Prato executivo: arroz branco, salada, batata frita e bife de 150g",
+          "preco": "39,90"
+        },
+        {
+          "nome": "Bife a cavalo",
+          "desc": "Prato executivo: arroz branco, ovo, feijão de caldo, farofa, batata frita, salada e bife de 150g",
+          "preco": "34,90"
+        }
+      ]
+    },
+    {
+      "id": "drinks",
+      "titulo": "Drinks",
+      "itens": [
+        {
+          "nome": "Dante's Fiu-Fiu",
+          "desc": "Fiu-fiu cajazinha, limão siciliano e morango",
+          "preco": "19,90"
+        },
+        {
+          "nome": "Caipirinha de abacaxi com hortelã",
+          "desc": "Fiu-fiu cajazinha com hortelã, limão e açúcar",
+          "preco": "19,90"
+        },
+        {
+          "nome": "Moscow Mule",
+          "desc": "Vodka, ginger ale, suco de limão e espumante de gengibre",
+          "preco": "24,90"
+        },
+        {
+          "nome": "Gin Tônica Kiwi",
+          "desc": "Gin, água tônica, kiwi e gelo",
+          "preco": "24,90"
+        }
+      ]
+    },
+    {
+      "id": "doses",
+      "titulo": "Doses",
+      "itens": [
+        {
+          "nome": "Red Label",
+          "desc": "Dose",
+          "preco": "20,00"
+        },
+        {
+          "nome": "Jack Daniel's",
+          "desc": "Dose",
+          "preco": "25,00"
+        },
+        {
+          "nome": "Gin Tanqueray",
+          "desc": "Dose",
+          "preco": "25,00"
+        },
+        {
+          "nome": "Espumante Chandon",
+          "desc": "Garrafa",
+          "preco": "200,00"
+        }
+      ]
+    },
+    {
+      "id": "sobremesas",
+      "titulo": "Sobremesas",
+      "itens": [
+        {
+          "nome": "Pudim de leite condensado",
+          "desc": "",
+          "preco": "10,00"
+        },
+        {
+          "nome": "Mousse de chocolate",
+          "desc": "",
+          "preco": "12,00"
+        },
+        {
+          "nome": "Taça Supremo",
+          "desc": "",
+          "preco": "17,00"
+        }
+      ]
+    }
+  ],
+  "galeria": [
+    {
+      "src": "img/pizza.png",
+      "alt": "Pizza com azeitona preta e rúcula"
+    },
+    {
+      "src": "img/drink.png",
+      "alt": "Drink com borda de sal e limão"
+    },
+    {
+      "src": "img/petisco.png",
+      "alt": "Tilápia crocante"
+    },
+    {
+      "src": "img/milkshake.png",
+      "alt": "Milk-shake com chantilly e morango"
+    }
+  ]
+}

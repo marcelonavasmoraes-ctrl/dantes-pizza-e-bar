@@ -1,0 +1,8 @@
+{
+  "name": "dantes-pizza-bar",
+  "version": "1.0.0",
+  "description": "Site do Dante's Pizza & Bar com reserva de mesa e painel do dono",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

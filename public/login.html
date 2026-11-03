@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar — Dante's Pizza & Bar</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="login-page">
+    <aside class="login-lado" aria-hidden="true">
+      <div class="quad">
+        <figure><img src="img/pizza.png" alt=""></figure>
+        <figure><img src="img/drink.png" alt=""></figure>
+        <figure><img src="img/petisco.png" alt=""></figure>
+        <figure><img src="img/milkshake.png" alt=""></figure>
+      </div>
+    </aside>
+
+    <section class="login-form">
+      <div class="conteudo fade">
+        <span class="logo">Dante's<b>.</b></span>
+        <p class="eyebrow">Pizza &amp; Bar · Barra do Garças</p>
+        <h1>Antes de entrar,<br>quem é você?</h1>
+        <p class="sub">Só nome e e-mail. Sem senha.</p>
+
+        <form id="form" novalidate>
+          <label class="campo"><span>Seu nome</span>
+            <input id="nome" type="text" autocomplete="name" placeholder="Como te chamamos?" required></label>
+          <label class="campo"><span>Seu e-mail</span>
+            <input id="email" type="email" autocomplete="email" placeholder="voce@email.com" required></label>
+          <p class="erro" id="erro" role="alert"></p>
+          <button class="btn" type="submit">Entrar no Dante's</button>
+        </form>
+        <p class="peq">Usamos seus dados só para identificar suas reservas de mesa.</p>
+      </div>
+    </section>
+  </main>
+  <script src="js/api.js"></script>
+  <script src="js/comum.js"></script>
+  <script>
+    if (Api.usuarioAtual()) location.replace("/inicio");
+    const f = document.getElementById("form"), erro = document.getElementById("erro");
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault(); erro.textContent = "";
+      try {
+        await Api.login({ nome: document.getElementById("nome").value, email: document.getElementById("email").value });
+        irPara("/inicio");
+      } catch (err) { erro.textContent = err.message; }
+    });
+  </script>
+</body>
+</html>
