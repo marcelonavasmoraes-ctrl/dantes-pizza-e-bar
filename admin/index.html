@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Painel — Dante's</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="adm">
+
+<!-- LOGIN DO DONO -->
+<main id="telaLogin" class="adm-login" hidden>
+  <form id="formLogin" class="caixa">
+    <span class="logo">Dante's<b>.</b></span>
+    <p class="eyebrow">Painel do dono</p>
+    <label class="campo" style="margin-top:22px"><span>Senha</span><input id="senha" type="password" autocomplete="current-password" required></label>
+    <p class="erro" id="erroLogin" role="alert"></p>
+    <button class="btn" type="submit" style="width:100%">Entrar</button>
+  </form>
+</main>
+
+<!-- PAINEL -->
+<div id="app" hidden>
+  <header class="adm-topo">
+    <div class="wrap">
+      <span class="logo">Dante's<b>.</b> <small>painel</small></span>
+      <nav class="abas-adm" id="abasAdm">
+        <button data-aba="reservas" class="ativa">Reservas <span class="badge" id="badge" hidden>0</span></button>
+        <button data-aba="dias">Dias especiais</button>
+        <button data-aba="func">Funcionamento</button>
+      </nav>
+      <button class="mini" id="sair">Sair</button>
+    </div>
+  </header>
+
+  <main class="wrap adm-main">
+    <div class="toast" id="toast" role="status"></div>
+
+    <!-- RESERVAS -->
+    <section id="aba-reservas">
+      <div class="resumo">
+        <div class="card"><b id="rsPend">0</b><span>aguardando você</span></div>
+        <div class="card"><b id="rsHoje">0</b><span>mesas hoje</span></div>
+        <div class="card"><b id="rs7">0</b><span>próximos 7 dias</span></div>
+      </div>
+      <div class="filtros">
+        <label class="campo"><span>Dia</span><input type="date" id="fData"></label>
+        <label class="campo"><span>Status</span>
+          <select id="fStatus"><option value="">Todos</option><option value="pendente">Aguardando</option><option value="confirmada">Confirmadas</option><option value="recusada">Recusadas</option><option value="cancelada">Canceladas</option></select></label>
+        <label class="campo chk"><input type="checkbox" id="fPassadas"> <span>Incluir dias passados</span></label>
+        <button class="mini" id="fLimpar" type="button">Limpar filtros</button>
+      </div>
+      <div id="listaRes"></div>
+    </section>
+
+    <!-- DIAS ESPECIAIS -->
+    <section id="aba-dias" hidden>
+      <h2 class="adm-h">Feriados e dias especiais</h2>
+      <p class="adm-p">Feche um dia (feriado, evento fechado) ou defina horários diferentes. Nos dias fechados o site não aceita reservas.</p>
+      <form id="formDia" class="caixa">
+        <div class="par">
+          <label class="campo"><span>Data</span><input type="date" id="dData" required></label>
+          <label class="campo"><span>O que vai acontecer?</span>
+            <select id="dTipo"><option value="fechado">Fechado nesse dia</option><option value="especial">Horários especiais</option></select></label>
+        </div>
+        <label class="campo"><span>Motivo (o cliente vê isso)</span><input type="text" id="dMotivo" maxlength="100" placeholder="Ex.: Feriado, Evento fechado, Dia dos Namorados"></label>
+        <div id="dHorBox" hidden><span class="rot">Horários desse dia</span><div id="dChips"></div></div>
+        <label class="campo chk" id="dCancelBox"><input type="checkbox" id="dCancelar"> <span>Cancelar as reservas que já existem nesse dia</span></label>
+        <p class="erro" id="dErro" role="alert"></p>
+        <button class="btn" type="submit">Salvar dia</button>
+      </form>
+      <h3 class="adm-h2">Próximos dias cadastrados</h3>
+      <div id="listaDias"></div>
+    </section>
+
+    <!-- FUNCIONAMENTO -->
+    <section id="aba-func" hidden>
+      <h2 class="adm-h">Funcionamento</h2>
+      <p class="adm-p">Dias e horários em que o site aceita reserva, toda semana.</p>
+      <form id="formFunc">
+        <div id="semana"></div>
+        <div class="caixa" style="margin-top:24px">
+          <div class="par">
+            <label class="campo"><span>Reservas por horário</span><input type="number" id="cMesas" min="1" max="200"></label>
+            <label class="campo"><span>Máx. de pessoas por reserva</span><input type="number" id="cPessoas" min="1" max="100"></label>
+          </div>
+          <div class="par">
+            <label class="campo"><span>Reservar até quantos dias à frente</span><input type="number" id="cDias" min="1" max="365"></label>
+            <label class="campo chk" style="align-self:end"><input type="checkbox" id="cAuto"> <span>Confirmar reservas automaticamente</span></label>
+          </div>
+          <p class="adm-p" style="margin:0">Desmarcado: cada pedido aparece como “aguardando” e você confirma ou recusa.</p>
+        </div>
+        <p class="erro" id="cErro" role="alert"></p>
+        <button class="btn" type="submit">Salvar funcionamento</button>
+      </form>
+    </section>
+  </main>
+</div>
+
+<script src="/admin/admin.js"></script>
+</body>
+</html>

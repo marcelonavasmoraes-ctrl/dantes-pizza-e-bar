@@ -6,9 +6,14 @@
   <title>Dante's Pizza & Bar — Barra do Garças</title>
   <meta name="description" content="Pizzas, petiscos, drinks e rodízio às quartas e quintas. Dante's Pizza & Bar, no centro de Barra do Garças - MT.">
   <link rel="stylesheet" href="css/style.css">
-  <script>try{ if(!localStorage.getItem("dantes_usuario")) location.replace("/dantes-pizza-e-bar"); }catch(e){}</script>
+  <script>try{ if(!sessionStorage.getItem("dantes_intro") && !/semintro/.test(location.search)) document.documentElement.classList.add("com-intro"); }catch(e){}</script>
 </head>
 <body>
+
+<div id="intro" aria-hidden="true">
+  <video id="introVideo" src="intro.mp4" muted playsinline preload="auto"></video>
+  <button id="introPular" type="button">Pular abertura</button>
+</div>
 
 <header class="topo" id="topo">
   <div class="wrap">
@@ -19,7 +24,7 @@
       <a href="#reservar">Reservar</a>
       <a href="#contato">Onde estamos</a>
     </nav>
-    <div class="user"><span id="olaUser"></span><button id="sair">Sair</button>
+    <div class="user"><span id="olaUser"></span><button id="sair" hidden>Sair</button><button id="entrar" data-reservar>Entrar</button>
       <button class="burger" id="burger" aria-label="Menu">☰</button></div>
   </div>
 </header>
@@ -88,6 +93,7 @@
         <p class="eyebrow">Reserva de mesa</p>
         <h2 style="margin:10px 0 24px">Guarde o seu lugar</h2>
         <div class="ok" id="ok" role="status"></div>
+        <div class="form-wrap">
         <form class="caixa" id="formReserva" novalidate>
           <div class="par">
             <label class="campo"><span>Nome</span><input id="rNome" type="text" readonly></label>
@@ -108,10 +114,17 @@
           <button class="btn" type="submit" id="rBtn">Reservar mesa</button>
           <p class="fechados" id="fechados"></p>
         </form>
+          <div class="trava" id="trava">
+            <p class="eyebrow">Quase lá</p>
+            <p>Entre com seu nome e e-mail para reservar a sua mesa.</p>
+            <button class="btn" type="button" data-reservar>Entrar para reservar</button>
+          </div>
+        </div>
       </div>
       <div class="minhas fade" style="--d:.15s">
         <h3>Suas reservas</h3>
         <div id="listaRes"></div>
+        <p class="vazio" id="avisoLogin" hidden>Entre para ver as suas reservas.</p>
       </div>
     </div>
   </section>
@@ -136,8 +149,27 @@
   <div class="wrap"><span>© <span id="ano"></span> Dante's Pizza &amp; Bar · Barra do Garças - MT</span><span id="rodapeCid">Pizzas · Petiscos · Drinks</span></div>
 </footer>
 
+<!-- LOGIN (só aparece ao tentar reservar) -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="mTitulo">
+    <button class="modal-x" id="mFechar" type="button" aria-label="Fechar">×</button>
+    <span class="logo">Dante's<b>.</b></span>
+    <p class="eyebrow">Para reservar sua mesa</p>
+    <h2 id="mTitulo">Quem é você?</h2>
+    <p class="sub">Só nome e e-mail. Sem senha.</p>
+    <form id="formLogin" novalidate>
+      <label class="campo"><span>Seu nome</span><input id="nome" type="text" autocomplete="name" placeholder="Como te chamamos?" required></label>
+      <label class="campo"><span>Seu e-mail</span><input id="email" type="email" autocomplete="email" placeholder="voce@email.com" required></label>
+      <p class="erro" id="mErro" role="alert"></p>
+      <button class="btn" type="submit" style="width:100%">Entrar e reservar</button>
+    </form>
+    <p class="peq">Usamos seus dados só para identificar suas reservas de mesa.</p>
+  </div>
+</div>
+
 <script src="js/api.js"></script>
 <script src="js/comum.js"></script>
+<script src="js/intro.js"></script>
 <script src="js/site.js"></script>
 </body>
 </html>

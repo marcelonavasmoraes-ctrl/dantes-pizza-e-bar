@@ -1,6 +1,17 @@
-DANTE'S — SITE DO CLIENTE (Render)
+DANTE'S — SITE + PAINEL DO DONO (Render + Supabase)
 
-Rodar local: npm start   (abre em http://localhost:3000/)
-Login: /dantes-pizza-e-bar    Site: /inicio
-Dados em dados/db.json. No plano gratis do Render esse arquivo e apagado a cada reinicio.
-A API do dono fica desligada ate existir a variavel ADMIN_SENHA.
+Cliente:  /dantes-pizza-e-bar     (depois do login: /inicio)
+Dono:     /dantes-dono
+
+Variaveis no Render (Environment):
+  ADMIN_SENHA   = senha do painel do dono
+  SUPABASE_URL  = endereco do projeto (https://xxxx.supabase.co)
+  SUPABASE_KEY  = chave SECRET do Supabase (nunca coloque no site nem no GitHub)
+
+Sem SUPABASE_URL/SUPABASE_KEY o servidor guarda em dados/db.json (so para teste local).
+A tabela do Supabase e criada com o arquivo SUPABASE.sql.
+
+ABERTURA (intro.mp4)
+- Ao abrir o site, o vídeo toca uma vez por visita; depois o site abre direto, sem login.
+- O login só aparece ao clicar em "Reservar mesa" (ou em "Entrar" no topo).
+- Para ver sem a abertura: adicione ?semintro ao endereço.

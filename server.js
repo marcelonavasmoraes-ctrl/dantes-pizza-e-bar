@@ -9,6 +9,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { AsyncLocalStorage } = require('async_hooks');
 
 const PORT = Number(process.env.PORT) || 3000;
 const ADMIN_SENHA = process.env.ADMIN_SENHA || ''; // vazio = API do dono desligada
@@ -17,6 +18,8 @@ const PUBLIC = path.join(DIR, 'public');
 const ADMIN = path.join(DIR, 'admin');
 const DADOS_DIR = process.env.DADOS_DIR || path.join(DIR, 'dados');
 const DB_FILE = path.join(DADOS_DIR, 'db.json');
+const SUPABASE_URL = (process.env.SUPABASE_URL || '').replace(/\/+$/, '');
+const SUPABASE_KEY = process.env.SUPABASE_KEY || '';
 const conteudo = JSON.parse(fs.readFileSync(path.join(DIR, 'conteudo.json'), 'utf8'));
 
 /* ---------------- banco (arquivo JSON, gravação atômica) ---------------- */
@@ -28,22 +31,76 @@ const configPadrao = () => ({
   confirmacaoAutomatica: false,  // false = dono precisa confirmar cada pedido
   semana: Array.from({ length: 7 }, () => ({ aberto: true, horarios: [...HORAS] })) // 0 = domingo
 });
-let db;
-function carregar() {
-  fs.mkdirSync(DADOS_DIR, { recursive: true });
-  if (fs.existsSync(DB_FILE)) {
-    db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-    db.config = { ...configPadrao(), ...(db.config || {}) };
-    db.excecoes = db.excecoes || []; db.usuarios = db.usuarios || []; db.reservas = db.reservas || [];
-  } else {
-    db = { segredo: crypto.randomBytes(32).toString('hex'), config: configPadrao(), excecoes: [], usuarios: [], reservas: [] };
+/* Onde os dados ficam:
+   - com SUPABASE_URL + SUPABASE_KEY  -> no Supabase (permanente)
+   - sem elas                         -> no arquivo dados/db.json (só para testes no seu PC) */
+const USA_SUPABASE = !!(SUPABASE_URL && SUPABASE_KEY);
+const als = new AsyncLocalStorage();
+const remoto = {
+  cab() {
+    const h = { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' };
+    if (SUPABASE_KEY.startsWith('eyJ')) h.Authorization = 'Bearer ' + SUPABASE_KEY;
+    return h;
+  },
+  async ler() {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/app_dados?id=eq.principal&select=dados`, { headers: this.cab(), signal: AbortSignal.timeout(10000) });
+    if (!r.ok) throw new Error(`Supabase respondeu ${r.status}: ${(await r.text()).slice(0, 200)}`);
+    const j = await r.json();
+    return j.length ? j[0].dados : null;
+  },
+  async gravar(obj) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/app_dados`, {
+      method: 'POST', headers: { ...this.cab(), Prefer: 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify({ id: 'principal', dados: obj, atualizado_em: new Date().toISOString() }), signal: AbortSignal.timeout(10000)
+    });
+    if (!r.ok) throw new Error(`Supabase respondeu ${r.status}: ${(await r.text()).slice(0, 200)}`);
   }
-  salvar();
+};
+const novoDb = () => ({ segredo: crypto.randomBytes(32).toString('hex'), config: configPadrao(), excecoes: [], usuarios: [], reservas: [] });
+function normaliza(d) {
+  d.config = { ...configPadrao(), ...(d.config || {}) };
+  d.excecoes = d.excecoes || []; d.usuarios = d.usuarios || []; d.reservas = d.reservas || [];
+  return d;
 }
-function salvar() {
+let db;
+async function carregar() {
+  if (USA_SUPABASE) {
+    const d = await remoto.ler();
+    db = d ? normaliza(d) : novoDb();
+    if (!d) await remoto.gravar(db);
+    return;
+  }
+  fs.mkdirSync(DADOS_DIR, { recursive: true });
+  db = fs.existsSync(DB_FILE) ? normaliza(JSON.parse(fs.readFileSync(DB_FILE, 'utf8'))) : novoDb();
+  salvarArquivo();
+}
+function salvarArquivo() {
   const tmp = DB_FILE + '.tmp';
   fs.writeFileSync(tmp, JSON.stringify(db, null, 2));
   fs.renameSync(tmp, DB_FILE);
+}
+/* Gravação no Supabase: em fila, uma por vez. A resposta ao cliente só sai depois que gravou. */
+let fila = [], gravando = false;
+async function rodarFila() {
+  if (gravando) return;
+  gravando = true;
+  while (fila.length) {
+    const lote = fila.splice(0);
+    try { await remoto.gravar(db); lote.forEach((w) => w.ok()); }
+    catch (e) {
+      console.error('Falha ao gravar no Supabase:', e.message);
+      try { const d = await remoto.ler(); if (d) db = normaliza(d); } catch (e2) {}
+      lote.forEach((w) => w.no(e));
+    }
+  }
+  gravando = false;
+}
+function salvar() {
+  if (!USA_SUPABASE) return salvarArquivo();
+  const p = new Promise((ok, no) => fila.push({ ok, no }));
+  p.catch(() => {});
+  const st = als.getStore(); if (st) st.p = p;
+  rodarFila();
 }
 
 /* ---------------- datas (sempre no horário de Brasília) ---------------- */
@@ -134,7 +191,12 @@ function falhou(ip) { const f = falhas.get(ip); if (!f || Date.now() - f.t >= 60
 /* ---------------- http ---------------- */
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.ico': 'image/x-icon' };
 const BASE_HEADERS = { 'X-Content-Type-Options': 'nosniff', 'Cache-Control': 'no-cache', 'Referrer-Policy': 'same-origin' };
-function json(res, status, obj, extra) { res.writeHead(status, { ...BASE_HEADERS, 'Content-Type': 'application/json; charset=utf-8', ...(extra || {}) }); res.end(JSON.stringify(obj)); }
+function json(res, status, obj, extra) {
+  const enviar = () => { res.writeHead(status, { ...BASE_HEADERS, 'Content-Type': 'application/json; charset=utf-8', ...(extra || {}) }); res.end(JSON.stringify(obj)); };
+  const st = als.getStore();
+  if (st && st.p) st.p.then(enviar, () => { res.writeHead(503, { ...BASE_HEADERS, 'Content-Type': 'application/json; charset=utf-8' }); res.end(JSON.stringify({ erro: 'Não foi possível salvar agora. Tente de novo em instantes.' })); });
+  else enviar();
+}
 function lerCorpo(req) {
   return new Promise((ok, no) => {
     const ch = []; let tam = 0;
@@ -163,12 +225,13 @@ async function rotear(req, res) {
   const m = req.method;
   const ip = req.socket.remoteAddress;
 
-  const ALIAS = { '/': '/login.html', '/dantes-pizza-e-bar': '/login.html', '/inicio': '/index.html' };
+  const ALIAS = { '/': '/index.html', '/dantes-pizza-e-bar': '/index.html', '/inicio': '/index.html' };
   const rotaArq = (m === 'GET' || m === 'HEAD') && ALIAS[rota] ? ALIAS[rota] : rota;
   if (rota === '/saude') { res.writeHead(200, { 'Content-Type': 'text/plain' }); return res.end('ok'); }
+  if (rota === '/dantes-dono' && (m === 'GET' || m === 'HEAD')) return estatico(res, ADMIN, '/index.html');
   if (rota === '/admin') { res.writeHead(302, { Location: '/admin/' }); return res.end(); }
   const api = rota.startsWith('/api/'), apiAdm = rota.startsWith('/admin/api/');
-  if (apiAdm && !ADMIN_SENHA) throw erro(404, 'Rota não encontrada.');
+  if (apiAdm && !ADMIN_SENHA) throw erro(503, 'Painel desligado: defina a senha ADMIN_SENHA no servidor.');
   if (!api && !apiAdm) {
     if (m !== 'GET' && m !== 'HEAD') return json(res, 405, { erro: 'Método não permitido.' });
     return rota.startsWith('/admin/') ? estatico(res, ADMIN, rota.slice(6)) : estatico(res, PUBLIC, rotaArq);
@@ -278,12 +341,17 @@ async function rotear(req, res) {
   throw erro(404, 'Rota não encontrada.');
 }
 
-carregar();
-http.createServer((req, res) => {
-  rotear(req, res).catch((e) => {
-    if (!e.status) console.error(e);
-    if (!res.headersSent) json(res, e.status || 500, { erro: e.status ? e.message : 'Erro interno no servidor.' });
+carregar().then(() => {
+  http.createServer((req, res) => {
+    als.run({ p: null }, () => {
+      rotear(req, res).catch((e) => {
+        if (!e.status) console.error(e);
+        if (!res.headersSent) json(res, e.status || 500, { erro: e.status ? e.message : 'Erro interno no servidor.' });
+      });
+    });
+  }).listen(PORT, () => {
+    console.log(`\n  Dante's no ar!\n  Site do cliente: http://localhost:${PORT}/\n  Dados salvos em: ${USA_SUPABASE ? 'Supabase (permanente)' : DB_FILE + '  (arquivo local)'}\n`);
   });
-}).listen(PORT, () => {
-  console.log(`\n  Dante's no ar!\n  Site do cliente: http://localhost:${PORT}/\n  Dados salvos em: ${DB_FILE}\n`);
-});
+  // o Supabase grátis pausa o projeto sem atividade; uma leitura a cada 12h evita isso
+  if (USA_SUPABASE) setInterval(() => remoto.ler().catch(() => {}), 12 * 3600e3);
+}).catch((e) => { console.error('Não foi possível iniciar:', e.message); process.exit(1); });
